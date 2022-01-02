@@ -39,14 +39,12 @@ jobs:
         java-package: jdk
         java-version: '17'
 
-    # 3. Setup local Maven package cache to speed up building
-    - name: Cache Maven packages
-      uses: actions/cache@v2
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
-
-    # 4. Build via Maven 
+    # 3. Build artifacts via Maven
     - name: Build via Maven
-      run: mvn verify -B --file pom.xml
+      run: mvn clean package install
+
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: artifacts
+        path: .
